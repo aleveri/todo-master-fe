@@ -1,0 +1,49 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+     <div class="bg-white rounded-lg p-6 w-full max-w-md">
+          <h2 class="text-xl font-bold mb-4">{{ todo ? 'Edit Todo' : 'Add New Todo' }}</h2>
+
+          <form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
+               <div class="mb-4">
+                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                    <input id="title" type="text" formControlName="title"
+                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                         [class.border-red-500]="todoForm.get('title')?.invalid && todoForm.get('title')?.touched">
+                    <div *ngIf="todoForm.get('title')?.invalid && todoForm.get('title')?.touched"
+                         class="text-red-500 text-sm mt-1">
+                         Title is required
+                    </div>
+               </div>
+
+               <div class="mb-4">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="description" formControlName="description" rows="3"
+                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"></textarea>
+               </div>
+
+               <div class="mb-4" *ngIf="!todo">
+                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select id="category" formControlName="category"
+                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                         [class.border-red-500]="todoForm.get('category')?.invalid && todoForm.get('category')?.touched">
+                         <option value="">Select a category</option>
+                         <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+                    </select>
+                    <div *ngIf="todoForm.get('category')?.invalid && todoForm.get('category')?.touched"
+                         class="text-red-500 text-sm mt-1">
+                         Category is required
+                    </div>
+               </div>
+
+               <div class="flex justify-end gap-2">
+                    <button type="button" (click)="close.emit()"
+                         class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">
+                         Cancel
+                    </button>
+                    <button type="submit" [disabled]="todoForm.invalid"
+                         class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded disabled:bg-blue-300">
+                         {{ todo ? 'Update' : 'Create' }}
+                    </button>
+               </div>
+          </form>
+     </div>
+</div>

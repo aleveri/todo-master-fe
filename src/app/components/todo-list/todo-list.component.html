@@ -1,0 +1,86 @@
+<div class="container mx-auto p-4">
+     <div class="flex justify-between">
+          <h1 class="text-2xl font-bold mb-4">Todo List</h1>
+
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+               (click)="showForm = true">
+               Add New Todo
+          </button>
+     </div>
+
+     <app-todo-form *ngIf="showForm" (close)="showForm = false; selectedTodo = null"
+          [todo]="selectedTodo"></app-todo-form>
+
+     <app-progression-form *ngIf="showProgressForm" (close)="showProgressForm = false; selectedTodo = null"
+          [todo]="selectedTodo"></app-progression-form>
+
+     <div *ngIf="todos().length <= 0" class="flex place-content-center">
+          <h1 class="text-4xl text-gray-300">
+               No Records Found
+          </h1>
+     </div>
+
+     <div *ngIf="(!showForm && !showProgressForm) && todos().length > 0" class="grid gap-4">
+          <ng-container *ngFor="let todo of todos()">
+               <mat-accordion>
+                    <mat-expansion-panel>
+                         <mat-expansion-panel-header>
+                              <mat-panel-title class="flex justify-between">
+                                   <div class="flex gap-2">
+                                        <h1>
+                                             {{todo.id}}) {{todo.title}}
+                                        </h1>
+                                        <h1 class="text-gray-300">
+                                             {{todo.description}}
+                                        </h1>
+                                        <div class="flex justify-between items-center">
+                                             <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">{{
+                                                  todo.category }}</span>
+                                             <span class="text-sm"></span>
+                                        </div>
+                                   </div>
+                                   <h1>
+                                        Completed: {{getTotalProgress(todo) == 100 ? '✅ Completed' : '🔄 In Progress' }}
+                                   </h1>
+                              </mat-panel-title>
+                         </mat-expansion-panel-header>
+
+                         <div *ngIf="todo.progressions.length == 0">
+                              <h1>
+                                   Doesn't have any progress registered.
+                              </h1>
+                         </div>
+
+                         <ng-container *ngFor="let progression of todo.progressions">
+                              <div class="flex justify-between items-center" *ngIf="todo.progressions.length > 0">
+                                   <h1>
+                                        {{ progression.date | date:'MMMM d, yyyy' }}
+                                   </h1>
+                                   <div class="flex items-center w-[50%]">
+                                        <mat-progress-bar mode="determinate"
+                                             [value]="progression.percent"></mat-progress-bar>
+                                        <h1 class="m-1">
+                                             {{progression.percent}}%
+                                        </h1>
+                                   </div>
+                              </div>
+                         </ng-container>
+                         <div class="mt-4 flex gap-2">
+                              <button (click)="selectTodo(todo)" *ngIf="getTotalProgress(todo) < 50"
+                                   class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded text-sm">
+                                   Edit
+                              </button>
+                              <button (click)="deleteTodo(todo.id)" *ngIf="getTotalProgress(todo) < 50"
+                                   class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm">
+                                   Delete
+                              </button>
+                              <button (click)="regsiterProgress(todo)" *ngIf="getTotalProgress(todo) < 100"
+                                   class="bg-purple-500 hover:bg-purple-600 text-white py-1 px-3 rounded text-sm">
+                                   Progress
+                              </button>
+                         </div>
+                    </mat-expansion-panel>
+               </mat-accordion>
+          </ng-container>
+     </div>
+</div>
